@@ -1,6 +1,4 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import dotenv from 'dotenv';
-dotenv.config();
 
 export default async function handler(req, res) {
     // CORS configuration
@@ -12,7 +10,7 @@ export default async function handler(req, res) {
         'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
     );
 
-    // Handle OPTIONS request for CORS preflight
+    // Handle OPTIONS request
     if (req.method === 'OPTIONS') {
         res.status(200).end();
         return;
@@ -31,13 +29,12 @@ export default async function handler(req, res) {
         }
 
         if (!process.env.GEMINI_API_KEY) {
-            return res.status(500).json({ error: 'GEMINI_API_KEY is not configured' });
+            console.error('GEMINI_API_KEY missing');
+            return res.status(500).json({ error: 'Server configuration error' });
         }
 
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        const model = genAI.getGenerativeModel({
-            model: "models/gemini-2.5-flash"
-        });
+        const model = genAI.getGenerativeModel({ model: "models/gemini-2.5-flash" });
 
         const prompt = `
       Analizează următorul text educațional:

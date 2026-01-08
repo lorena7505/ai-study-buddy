@@ -29,11 +29,18 @@ function App() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to fetch data from server');
+        let errorMessage = 'Failed to fetch data';
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.error || errorMessage;
+        } catch (e) {
+          errorMessage = response.statusText;
+        }
+        throw new Error(errorMessage);
       }
 
       const data = await response.json();
-      setResult(data.lesson);
+      setResult(data);
     } catch (err) {
       setError(err.message);
     } finally {
