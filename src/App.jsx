@@ -33,7 +33,7 @@ function App() {
       }
 
       const data = await response.json();
-      setResult(data);
+      setResult(data.lesson);
     } catch (err) {
       setError(err.message);
     } finally {
